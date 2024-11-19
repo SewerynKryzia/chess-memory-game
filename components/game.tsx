@@ -1,5 +1,10 @@
 import React from "react";
+import Chessboard from "@/components/chessboard";
 
 export default function Game() {
-  return <div>Game</div>;
+  return (
+    <div>
+      <Chessboard />
+    </div>
+  );
 }
