@@ -8,7 +8,7 @@ export function changeFenToArray(fenPosition: string) {
         arrayPosition.push("");
       }
     } else if (Object.keys(PIECES).includes(fenPosition[i])) {
-      arrayPosition.push(PIECES[fenPosition[i]].symbol);
+      arrayPosition.push(fenPosition[i]);
     }
   }
   return arrayPosition;
