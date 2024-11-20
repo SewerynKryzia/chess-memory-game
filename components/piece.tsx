@@ -5,6 +5,7 @@ import {
   FaChessQueen,
   FaChessKing,
   FaChessPawn,
+  FaQuestion,
 } from "react-icons/fa6";
 
 export default function Piece({ symbol }: { symbol: string }) {
@@ -46,6 +47,9 @@ export default function Piece({ symbol }: { symbol: string }) {
       break;
     case "p":
       icon = <FaChessPawn className="text-black" />;
+      break;
+    case "?":
+      icon = <FaQuestion className="text-green-900" />;
       break;
     default:
       icon = null;
