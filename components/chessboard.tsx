@@ -1,15 +1,12 @@
-import { changeFenToArray, drawQuestion } from "@/lib/functions";
-
 import { cn } from "@/lib/utils";
 import Piece from "@/components/piece";
 const FILES = "abcdefgh";
 
-export default function Chessboard() {
-  const FEN_POSITION = "2k3b1/8/8/8/8/8/8/1R4K1";
+type ChessboardProps = {
+  arrayPosition: string[];
+};
 
-  const { arrayPosition, piecesInfo } = changeFenToArray(FEN_POSITION);
-  const questions = drawQuestion(piecesInfo);
-  console.log(questions);
+export default function Chessboard({ arrayPosition }: ChessboardProps) {
   return (
     <div className="grid max-w-[600px] grid-cols-8 grid-rows-8 content-center justify-items-center">
       {arrayPosition.map((symbol, index) => {
