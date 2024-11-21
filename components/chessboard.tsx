@@ -4,12 +4,34 @@ const FILES = "abcdefgh";
 
 type ChessboardProps = {
   arrayPosition: string[];
+  currentQuestion: null | { position: number; type: string; answers: string[] };
+  ready: boolean;
+  start: boolean;
 };
 
-export default function Chessboard({ arrayPosition }: ChessboardProps) {
+export default function Chessboard({
+  arrayPosition,
+  currentQuestion,
+  ready,
+  start,
+}: ChessboardProps) {
+  let array = [...arrayPosition];
+  if (start && ready) {
+    if (currentQuestion) {
+      array = [
+        ...Array(currentQuestion?.position),
+        "?",
+        ...Array(63 - currentQuestion?.position),
+      ];
+    } else {
+      array = [...Array(64)];
+    }
+  } else if (!start) {
+    array = [...Array(64)];
+  }
   return (
     <div className="grid max-w-[600px] grid-cols-8 grid-rows-8 content-center justify-items-center">
-      {arrayPosition.map((symbol, index) => {
+      {array.map((symbol, index) => {
         return (
           <div
             key={index}

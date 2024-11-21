@@ -25,7 +25,7 @@ export function changeFenToArray(fenPosition: string) {
 export function drawQuestion(piecesInfo: { position: number; type: string }[]) {
   // * add empty squares
   // question focus on squares where are chess pieces, but additionally there are added random empty squares and their number base on number of chess pieces
-  const emptySquaresToAdd = Math.floor(piecesInfo.length / 3) + 1; // there are max 32 chess pieces on board, so there are always empty squares available
+  const emptySquaresToAdd = Math.floor(piecesInfo.length / 4) + 1; // there are max 32 chess pieces on board, so there are always empty squares available
   const piecesAndEmpty = [...piecesInfo];
   for (let i = 0; i <= emptySquaresToAdd; i++) {
     function randomPosition() {
@@ -45,6 +45,7 @@ export function drawQuestion(piecesInfo: { position: number; type: string }[]) {
   const shuffledArray = piecesAndEmpty.sort(() => 0.5 - Math.random());
   const questions = shuffledArray.slice(0, QUESTIONS_NUMBER);
 
+  // TODO - pawns cannot be on positions 0-7 and 56-63
   // * draw 3 incorrect answers for each question
   const allAnswers = [
     "K",
