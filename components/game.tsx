@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { changeFenToArray, drawQuestion } from "@/lib/functions";
 import Chessboard from "@/components/chessboard";
 import GameControl from "./game-control";
@@ -27,13 +27,23 @@ export default function Game() {
   const [score, setScore] = useState(0);
 
   const [start, setStart] = useState(false);
+  // const [gameOver, setGameOver] = useState(false);
   const [ready, setReady] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [questions, setQuestions] = useState<TQuestions>(null);
 
+  useEffect(() => {
+    if (lifes <= 0 || time <= 0) {
+      setQuestions(null);
+      setReady(false);
+      setStart(false);
+    }
+  }, [lifes, time]);
   const handleStart = () => {
     const questions = drawQuestion(piecesInfo);
     setQuestions(questions);
+    setLifes(LIFES_NUMBER);
+    setScore(0);
     setStart(true);
   };
 
@@ -70,6 +80,8 @@ export default function Game() {
           currentQuestion={questions && questions[currentQuestion]}
           ready={ready}
           start={start}
+          isOver={lifes <= 0 || time <= 0}
+          handleStart={handleStart}
         />
       </div>
       <div className="flex items-center justify-center">
@@ -82,7 +94,6 @@ export default function Game() {
           currentQuestion={questions && questions[currentQuestion]}
           handleAnswer={handleAnswer}
           handleReady={handleReady}
-          handleStart={handleStart}
         />
       </div>
     </div>

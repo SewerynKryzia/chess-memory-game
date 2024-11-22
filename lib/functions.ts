@@ -72,8 +72,13 @@ export function drawQuestion(piecesInfo: { position: number; type: string }[]) {
     for (let i = 1; i < ANSWERS_NUMBER; i++) {
       function randomAnswer() {
         const randomIndex = Math.floor(Math.random() * allAnswers.length);
+        // prevent the same answers
         const exist = updatedQuestion.answers.includes(allAnswers[randomIndex]);
-        if (!exist) {
+        // prevent pawns being in answers if pawns are on 1 and 8 rank (this is impossible in chess)
+        const pawnOnEdge =
+          (question.position <= 0 || question.position >= 56) &&
+          (allAnswers[randomIndex] === "p" || allAnswers[randomIndex] === "P");
+        if (!exist && !pawnOnEdge) {
           updatedQuestion.answers.push(allAnswers[randomIndex]);
         } else {
           randomAnswer();

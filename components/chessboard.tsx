@@ -1,19 +1,24 @@
 import { cn } from "@/lib/utils";
 import Piece from "@/components/piece";
+import Message from "./message";
 const FILES = "abcdefgh";
 
 type ChessboardProps = {
   arrayPosition: string[];
   currentQuestion: null | { position: number; type: string; answers: string[] };
+  isOver: boolean;
   ready: boolean;
   start: boolean;
+  handleStart: () => void;
 };
 
 export default function Chessboard({
   arrayPosition,
   currentQuestion,
+  isOver,
   ready,
   start,
+  handleStart,
 }: ChessboardProps) {
   let array = [...arrayPosition];
   if (start && ready) {
@@ -30,7 +35,7 @@ export default function Chessboard({
     array = [...Array(64)];
   }
   return (
-    <div className="grid max-w-[600px] grid-cols-8 grid-rows-8 content-center justify-items-center">
+    <div className="relative grid max-w-[600px] grid-cols-8 grid-rows-8 content-center justify-items-center">
       {array.map((symbol, index) => {
         return (
           <div
@@ -57,6 +62,7 @@ export default function Chessboard({
           </div>
         );
       })}
+      <Message isOver={isOver} start={start} handleStart={handleStart} />
     </div>
   );
 }

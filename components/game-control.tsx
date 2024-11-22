@@ -2,7 +2,6 @@ import Answers from "./answers";
 import Lifes from "./lifes";
 import ReadyBtn from "./ready-btn";
 import Score from "./score";
-import StartBtn from "./start-btn";
 import Timer from "./timer";
 
 type GameControlProps = {
@@ -14,7 +13,6 @@ type GameControlProps = {
   currentQuestion: null | { position: number; type: string; answers: string[] };
   handleAnswer: (pickedAnswer: string) => void;
   handleReady: () => void;
-  handleStart: () => void;
 };
 export default function GameControl({
   lifes,
@@ -25,7 +23,6 @@ export default function GameControl({
   currentQuestion,
   handleAnswer,
   handleReady,
-  handleStart,
 }: GameControlProps) {
   return (
     <div>
@@ -38,7 +35,6 @@ export default function GameControl({
           handleAnswer={handleAnswer}
         />
       )}
-      {!start && <StartBtn handleStart={handleStart} />}
       {!ready && start && <ReadyBtn handleReady={handleReady} />}
     </div>
   );
