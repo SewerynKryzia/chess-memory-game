@@ -35,13 +35,13 @@ export default function Chessboard({
     array = [...Array(64)];
   }
   return (
-    <div className="relative grid max-w-[600px] grid-cols-8 grid-rows-8 content-center justify-items-center">
+    <div className="relative flex w-full max-w-[600px] flex-wrap items-center justify-center">
       {array.map((symbol, index) => {
         return (
           <div
             key={index}
             className={cn(
-              "relative flex size-20 items-center justify-center",
+              "relative flex aspect-square w-[12.5%] items-center justify-center",
               (Math.floor(index / 8) + index) % 2
                 ? "bg-amber-600"
                 : "bg-amber-400",

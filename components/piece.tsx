@@ -55,5 +55,9 @@ export default function Piece({ symbol }: { symbol: string }) {
       icon = null;
   }
 
-  return <span className="inline-block font-mono text-5xl">{icon}</span>;
+  return (
+    <span className="inline-block font-mono text-2xl min-[320px]:text-3xl min-[480px]:text-4xl sm:text-5xl">
+      {icon}
+    </span>
+  );
 }

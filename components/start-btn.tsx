@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 type StartBtnProps = {
   children?: React.ReactNode;
@@ -6,20 +6,10 @@ type StartBtnProps = {
   handleStart: () => void;
 };
 
-export default function StartBtn({
-  children,
-  className,
-  handleStart,
-}: StartBtnProps) {
+export default function StartBtn({ children, handleStart }: StartBtnProps) {
   return (
-    <button
-      onClick={handleStart}
-      className={cn(
-        "m-4 w-36 rounded bg-green-800 px-4 py-2 text-slate-50",
-        className,
-      )}
-    >
+    <Button onClick={handleStart} size="lg">
       {children}
-    </button>
+    </Button>
   );
 }

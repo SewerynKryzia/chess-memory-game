@@ -6,7 +6,6 @@ import Chessboard from "@/components/chessboard";
 import GameControl from "./game-control";
 import { LIFES_NUMBER, QUESTIONS_NUMBER, TIME } from "@/lib/settings";
 import { SAMPLE_FEN_POSITIONS_ARRAY } from "@/lib/constants";
-// const FEN_POSITION = "2k1K3/8/2N5/8/8/8/8/2B5";
 
 type TQuestions =
   | null
@@ -17,28 +16,44 @@ type TQuestions =
     }[];
 
 export default function Game() {
+  // states
   const [level, setLevel] = useState(1);
   const { arrayPosition, piecesInfo } = changeFenToArray(
     SAMPLE_FEN_POSITIONS_ARRAY[level - 1][0],
   );
-
   const [lifes, setLifes] = useState(LIFES_NUMBER);
   const [time, setTime] = useState(TIME);
   const [score, setScore] = useState(0);
-
   const [start, setStart] = useState(false);
-  // const [gameOver, setGameOver] = useState(false);
   const [ready, setReady] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [questions, setQuestions] = useState<TQuestions>(null);
 
+  // effects
   useEffect(() => {
     if (lifes <= 0 || time <= 0) {
       setQuestions(null);
+      setLevel(1);
+      setCurrentQuestion(0);
       setReady(false);
       setStart(false);
     }
   }, [lifes, time]);
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key && start) {
+        handleReady();
+      }
+    };
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [start]);
+
+  // handlers
   const handleStart = () => {
     const questions = drawQuestion(piecesInfo);
     setQuestions(questions);
@@ -68,13 +83,11 @@ export default function Game() {
       }
     }
   };
-  console.log("score", score);
-  console.log("lifes", lifes);
-  console.log("level", level);
-  console.log("question", currentQuestion);
+
+  // render
   return (
-    <div>
-      <div className="flex items-center justify-center">
+    <div className="m-auto flex flex-wrap items-stretch justify-center py-16 md:max-w-[900px]">
+      <div className="flex w-full items-center justify-center md:max-w-[600px]">
         <Chessboard
           arrayPosition={arrayPosition}
           currentQuestion={questions && questions[currentQuestion]}
@@ -84,7 +97,8 @@ export default function Game() {
           handleStart={handleStart}
         />
       </div>
-      <div className="flex items-center justify-center">
+
+      <div className="flex w-full max-w-[600px] justify-center md:max-w-[300px]">
         <GameControl
           lifes={lifes}
           ready={ready}

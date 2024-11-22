@@ -25,7 +25,7 @@ export default function GameControl({
   handleReady,
 }: GameControlProps) {
   return (
-    <div>
+    <div className="flex h-72 min-h-full w-full flex-col items-center justify-stretch gap-4 bg-slate-950">
       <Timer time={time} />
       <Lifes lifes={lifes} />
       <Score score={score} />
