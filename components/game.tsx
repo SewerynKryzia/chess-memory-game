@@ -29,6 +29,7 @@ export default function Game() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [questions, setQuestions] = useState<TQuestions>(null);
 
+  console.log(arrayPosition, piecesInfo);
   // effects
   useEffect(() => {
     if (lifes <= 0 || time <= 0) {
@@ -41,8 +42,8 @@ export default function Game() {
   }, [lifes, time]);
 
   useEffect(() => {
-    const handleKeyPress = (event) => {
-      if (event.key && start) {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === " " && start) {
         handleReady();
       }
     };
@@ -51,18 +52,18 @@ export default function Game() {
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [start]);
+  });
 
   // handlers
   const handleStart = () => {
-    const questions = drawQuestion(piecesInfo);
-    setQuestions(questions);
     setLifes(LIFES_NUMBER);
     setScore(0);
     setStart(true);
   };
 
   const handleReady = () => {
+    const questions = drawQuestion(piecesInfo);
+    setQuestions(questions);
     setReady(true);
   };
 
