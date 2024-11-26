@@ -29,7 +29,6 @@ export default function Game() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [questions, setQuestions] = useState<TQuestions>(null);
 
-  console.log(arrayPosition, piecesInfo);
   // effects
   useEffect(() => {
     if (lifes <= 0 || time <= 0) {
@@ -71,8 +70,22 @@ export default function Game() {
     };
   });
 
+  useEffect(() => {
+    if (start) {
+      const myInterval = setInterval(() => {
+        if (time > 0) {
+          setTime(time - 1);
+        }
+      }, 1000);
+      return () => {
+        clearInterval(myInterval);
+      };
+    }
+  }, [start, time]);
+
   // handlers
   const handleStart = () => {
+    setTime(TIME);
     setLifes(LIFES_NUMBER);
     setScore(0);
     setStart(true);
