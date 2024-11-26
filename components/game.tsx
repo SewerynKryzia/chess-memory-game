@@ -43,8 +43,25 @@ export default function Game() {
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === " " && start) {
+      if (event.key === " " && start && !ready) {
         handleReady();
+      } else if (start && ready) {
+        switch (event.key) {
+          case "1":
+            handleAnswer(0);
+            break;
+          case "2":
+            handleAnswer(1);
+            break;
+          case "3":
+            handleAnswer(2);
+            break;
+          case "4":
+            handleAnswer(3);
+            break;
+          default:
+          // do nothing
+        }
       }
     };
     window.addEventListener("keydown", handleKeyPress);
@@ -67,9 +84,11 @@ export default function Game() {
     setReady(true);
   };
 
-  const handleAnswer = (pickedAnswer: string) => {
+  const handleAnswer = (pickedAnswer: number) => {
     if (questions) {
-      const correct = pickedAnswer === questions[currentQuestion].type;
+      const correct =
+        questions[currentQuestion].answers[pickedAnswer] ===
+        questions[currentQuestion].type;
       if (correct) {
         setScore((prev) => prev + 1);
       } else {

@@ -11,7 +11,7 @@ type GameControlProps = {
   start: boolean;
   time: number;
   currentQuestion: null | { position: number; type: string; answers: string[] };
-  handleAnswer: (pickedAnswer: string) => void;
+  handleAnswer: (pickedAnswer: number) => void;
   handleReady: () => void;
 };
 export default function GameControl({
