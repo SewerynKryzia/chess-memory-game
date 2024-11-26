@@ -45,7 +45,6 @@ export function drawQuestion(piecesInfo: { position: number; type: string }[]) {
   const shuffledArray = piecesAndEmpty.sort(() => 0.5 - Math.random());
   const questions = shuffledArray.slice(0, QUESTIONS_NUMBER);
 
-  // TODO - pawns cannot be on positions 0-7 and 56-63
   // * draw 3 incorrect answers for each question
   const allAnswers = [
     "K",
@@ -74,7 +73,7 @@ export function drawQuestion(piecesInfo: { position: number; type: string }[]) {
         const randomIndex = Math.floor(Math.random() * allAnswers.length);
         // prevent the same answers
         const exist = updatedQuestion.answers.includes(allAnswers[randomIndex]);
-        // prevent pawns being in answers if pawns are on 1 and 8 rank (this is impossible in chess)
+        // prevent pawns being in answers if pawns are on 1 and 8 ranks (this is impossible in chess)
         const pawnOnEdge =
           (question.position <= 0 || question.position >= 56) &&
           (allAnswers[randomIndex] === "p" || allAnswers[randomIndex] === "P");
