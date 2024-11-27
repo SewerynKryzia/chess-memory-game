@@ -6,6 +6,7 @@ const FILES = "abcdefgh";
 type ChessboardProps = {
   arrayPosition: string[];
   currentQuestion: null | { position: number; type: string; answers: string[] };
+  isLoading: boolean;
   isOver: boolean;
   ready: boolean;
   start: boolean;
@@ -15,6 +16,7 @@ type ChessboardProps = {
 export default function Chessboard({
   arrayPosition,
   currentQuestion,
+  isLoading,
   isOver,
   ready,
   start,
@@ -62,7 +64,12 @@ export default function Chessboard({
           </div>
         );
       })}
-      <Message isOver={isOver} start={start} handleStart={handleStart} />
+      <Message
+        isLoading={isLoading}
+        isOver={isOver}
+        start={start}
+        handleStart={handleStart}
+      />
     </div>
   );
 }

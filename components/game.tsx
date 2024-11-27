@@ -5,8 +5,9 @@ import { changeFenToArray, drawQuestion } from "@/lib/functions";
 import Chessboard from "@/components/chessboard";
 import GameControl from "./game-control";
 import { LIFES_NUMBER, QUESTIONS_NUMBER, TIME } from "@/lib/settings";
-import { SAMPLE_FEN_POSITIONS_ARRAY } from "@/lib/constants";
+import { getRandomPositions } from "@/actions/positionAction";
 
+// types
 type TQuestions =
   | null
   | {
@@ -15,12 +16,19 @@ type TQuestions =
       type: string;
     }[];
 
+type TPositions =
+  | null
+  | {
+      _id: string;
+      fen: string;
+      pieces: number;
+      createdAt: string;
+    }[][];
+
 export default function Game() {
   // states
   const [level, setLevel] = useState(1);
-  const { arrayPosition, piecesInfo } = changeFenToArray(
-    SAMPLE_FEN_POSITIONS_ARRAY[level - 1][0],
-  );
+  const [positions, setPositions] = useState<TPositions>(null);
   const [lifes, setLifes] = useState(LIFES_NUMBER);
   const [time, setTime] = useState(TIME);
   const [score, setScore] = useState(0);
@@ -28,8 +36,31 @@ export default function Game() {
   const [ready, setReady] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [questions, setQuestions] = useState<TQuestions>(null);
+  const [arrayPosition, setArrayPosition] = useState<string[]>([...Array(64)]);
+  const [piecesInfo, setPiecesInfo] = useState<
+    { position: number; type: string }[] | null
+  >(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // effects
+  useEffect(() => {
+    if (positions) {
+      if (level < positions.length) {
+        const { arrayPosition, piecesInfo } = changeFenToArray(
+          positions[level - 1][0].fen,
+        );
+        setArrayPosition(arrayPosition);
+        setPiecesInfo(piecesInfo);
+      } else {
+        const { arrayPosition, piecesInfo } = changeFenToArray(
+          positions[positions.length - 1][level - positions.length].fen,
+        );
+        setArrayPosition(arrayPosition);
+        setPiecesInfo(piecesInfo);
+      }
+    }
+  }, [positions, level]);
+
   useEffect(() => {
     if (lifes <= 0 || time <= 0) {
       setQuestions(null);
@@ -84,17 +115,23 @@ export default function Game() {
   }, [start, time]);
 
   // handlers
-  const handleStart = () => {
+  const handleStart = async () => {
+    setIsLoading(true);
+    const newPositions = await getRandomPositions();
+    setPositions(newPositions);
     setTime(TIME);
     setLifes(LIFES_NUMBER);
     setScore(0);
     setStart(true);
+    setIsLoading(false);
   };
 
   const handleReady = () => {
-    const questions = drawQuestion(piecesInfo);
-    setQuestions(questions);
-    setReady(true);
+    if (piecesInfo) {
+      const questions = drawQuestion(piecesInfo);
+      setQuestions(questions);
+      setReady(true);
+    }
   };
 
   const handleAnswer = (pickedAnswer: number) => {
@@ -126,6 +163,7 @@ export default function Game() {
           currentQuestion={questions && questions[currentQuestion]}
           ready={ready}
           start={start}
+          isLoading={isLoading}
           isOver={lifes <= 0 || time <= 0}
           handleStart={handleStart}
         />
