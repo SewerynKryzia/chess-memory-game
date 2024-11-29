@@ -6,6 +6,7 @@ import Chessboard from "@/components/chessboard";
 import GameControl from "./game-control";
 import { LIFES_NUMBER, QUESTIONS_NUMBER, TIME } from "@/lib/settings";
 import { getRandomPositions } from "@/actions/positionAction";
+import Message from "./message";
 
 // types
 type TQuestions =
@@ -157,16 +158,21 @@ export default function Game() {
   // render
   return (
     <div className="m-auto flex flex-wrap items-stretch justify-center py-16 md:max-w-[900px]">
-      <div className="flex w-full items-center justify-center md:max-w-[600px]">
+      <div className="relative flex h-full w-full flex-wrap items-center justify-center md:max-h-[600px] md:max-w-[600px]">
         <Chessboard
           arrayPosition={arrayPosition}
           currentQuestion={questions && questions[currentQuestion]}
           ready={ready}
           start={start}
-          isLoading={isLoading}
-          isOver={lifes <= 0 || time <= 0}
-          handleStart={handleStart}
         />
+        {!start && (
+          <Message
+            isLoading={isLoading}
+            isOver={lifes <= 0 || time <= 0}
+            score={score}
+            handleStart={handleStart}
+          />
+        )}
       </div>
 
       <div className="flex w-full max-w-[600px] justify-center md:max-w-[300px]">

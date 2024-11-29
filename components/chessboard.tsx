@@ -1,26 +1,19 @@
 import { cn } from "@/lib/utils";
 import Piece from "@/components/piece";
-import Message from "./message";
 const FILES = "abcdefgh";
 
 type ChessboardProps = {
   arrayPosition: string[];
   currentQuestion: null | { position: number; type: string; answers: string[] };
-  isLoading: boolean;
-  isOver: boolean;
   ready: boolean;
   start: boolean;
-  handleStart: () => void;
 };
 
 export default function Chessboard({
   arrayPosition,
   currentQuestion,
-  isLoading,
-  isOver,
   ready,
   start,
-  handleStart,
 }: ChessboardProps) {
   let array = [...arrayPosition];
   if (start && ready) {
@@ -37,7 +30,7 @@ export default function Chessboard({
     array = [...Array(64)];
   }
   return (
-    <div className="relative flex w-full max-w-[600px] flex-wrap items-center justify-center">
+    <>
       {array.map((symbol, index) => {
         return (
           <div
@@ -64,12 +57,6 @@ export default function Chessboard({
           </div>
         );
       })}
-      <Message
-        isLoading={isLoading}
-        isOver={isOver}
-        start={start}
-        handleStart={handleStart}
-      />
-    </div>
+    </>
   );
 }

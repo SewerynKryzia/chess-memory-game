@@ -1,9 +1,9 @@
 import { getTopScores } from "@/actions/scoreActions";
+import { LEADERBOARD_POSITIONS } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 
 export default async function Leaderboard() {
-  const topScores = await getTopScores(100);
-  console.log(topScores);
+  const topScores = await getTopScores(LEADERBOARD_POSITIONS);
   return (
     <main className="min-h-svh bg-slate-900">
       <div className="flex items-center justify-center py-12 text-zinc-50">

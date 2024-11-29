@@ -8,7 +8,7 @@ type StartBtnProps = {
 
 export default function StartBtn({ children, handleStart }: StartBtnProps) {
   return (
-    <Button onClick={handleStart} size="lg">
+    <Button onClick={handleStart} variant="secondary" size="lg">
       {children}
     </Button>
   );
