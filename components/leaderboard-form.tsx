@@ -38,7 +38,7 @@ export default function LeaderboardForm({ score }: { score: number }) {
     return;
   }
 
-  console.log(form.formState.isSubmitSuccessful);
+  // console.log(form.formState.errors);
 
   return form.formState.isSubmitSuccessful ? (
     <span className="text-green-500">Success!</span>

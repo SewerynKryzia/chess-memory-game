@@ -2,9 +2,15 @@ import Answer from "./answer";
 
 export default function Answers({
   currentQuestion,
+  review,
+  reviewSelectedAnswer,
+  reviewCorrect,
   handleAnswer,
 }: {
   currentQuestion: { position: number; type: string; answers: string[] };
+  review: boolean;
+  reviewSelectedAnswer: string;
+  reviewCorrect: boolean;
   handleAnswer: (pickedAnswer: number) => void;
 }) {
   return (
@@ -15,6 +21,9 @@ export default function Answers({
             key={index}
             index={index}
             symbol={answer}
+            review={review}
+            reviewSelectedAnswer={reviewSelectedAnswer}
+            reviewCorrect={reviewCorrect}
             handleAnswer={handleAnswer}
           />
         );

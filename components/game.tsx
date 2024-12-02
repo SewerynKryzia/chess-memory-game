@@ -4,44 +4,33 @@ import React, { useEffect, useState } from "react";
 import { changeFenToArray, drawQuestion } from "@/lib/functions";
 import Chessboard from "@/components/chessboard";
 import GameControl from "./game-control";
-import { LIFES_NUMBER, QUESTIONS_NUMBER, TIME } from "@/lib/settings";
+import { LIFES_NUMBER, QUESTIONS_NUMBER } from "@/lib/settings";
 import { getRandomPositions } from "@/actions/positionAction";
 import Message from "./message";
-
-// types
-type TQuestions =
-  | null
-  | {
-      answers: string[];
-      position: number;
-      type: string;
-    }[];
-
-type TPositions =
-  | null
-  | {
-      _id: string;
-      fen: string;
-      pieces: number;
-      createdAt: string;
-    }[][];
+import Reviews from "./reviews";
+import { TPositions, TQuestion, TReview } from "@/lib/types";
+import { Button } from "./ui/button";
 
 export default function Game() {
   // states
   const [level, setLevel] = useState(1);
   const [positions, setPositions] = useState<TPositions>(null);
   const [lifes, setLifes] = useState(LIFES_NUMBER);
-  const [time, setTime] = useState(TIME);
+  const [timeOver, setTimeOver] = useState(false);
   const [score, setScore] = useState(0);
   const [start, setStart] = useState(false);
   const [ready, setReady] = useState(false);
+  const [review, setReview] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [questions, setQuestions] = useState<TQuestions>(null);
+  const [questions, setQuestions] = useState<null | TQuestion[]>(null);
   const [arrayPosition, setArrayPosition] = useState<string[]>([...Array(64)]);
   const [piecesInfo, setPiecesInfo] = useState<
     { position: number; type: string }[] | null
   >(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [reviews, setReviews] = useState<TReview[]>([]);
+  const [reviewCorrect, setReviewCorrect] = useState(false);
+  const [reviewSelectedAnswer, setReviewSelectedAnswer] = useState("");
 
   // effects
   useEffect(() => {
@@ -63,18 +52,18 @@ export default function Game() {
   }, [positions, level]);
 
   useEffect(() => {
-    if (lifes <= 0 || time <= 0) {
+    if (lifes <= 0 || timeOver) {
       setQuestions(null);
       setLevel(1);
       setCurrentQuestion(0);
       setReady(false);
       setStart(false);
     }
-  }, [lifes, time]);
+  }, [lifes, timeOver]);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === " " && start && !ready) {
+      if (event.key === "r" && start && !ready) {
         handleReady();
       } else if (start && ready) {
         switch (event.key) {
@@ -102,28 +91,16 @@ export default function Game() {
     };
   });
 
-  useEffect(() => {
-    if (start) {
-      const myInterval = setInterval(() => {
-        if (time > 0) {
-          setTime(time - 1);
-        }
-      }, 1000);
-      return () => {
-        clearInterval(myInterval);
-      };
-    }
-  }, [start, time]);
-
   // handlers
   const handleStart = async () => {
     setIsLoading(true);
     const newPositions = await getRandomPositions();
     setPositions(newPositions);
-    setTime(TIME);
+    setTimeOver(false);
     setLifes(LIFES_NUMBER);
     setScore(0);
     setStart(true);
+    setReviews([]);
     setIsLoading(false);
   };
 
@@ -145,6 +122,13 @@ export default function Game() {
       } else {
         setLifes((prev) => prev - 1);
       }
+      const newReview = {
+        arrayPosition,
+        ...questions[currentQuestion],
+        correct,
+        pickedAnswer: questions[currentQuestion].answers[pickedAnswer],
+      };
+      setReviews((prev) => [...prev, newReview]);
       if (currentQuestion < QUESTIONS_NUMBER - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
@@ -152,6 +136,23 @@ export default function Game() {
         setReady(false);
         setLevel((prev) => prev + 1);
       }
+    }
+  };
+
+  const handleTimeOver = () => {
+    setTimeOver(true);
+  };
+
+  const handleShowReview = (index: number) => {
+    const { arrayPosition, answers, correct, position, type, pickedAnswer } =
+      reviews[index];
+    setReviewCorrect(correct);
+    setArrayPosition(arrayPosition);
+    setQuestions([{ answers, position, type }]);
+    setReviewSelectedAnswer(pickedAnswer);
+    setCurrentQuestion(0);
+    if (!review) {
+      setReview(true);
     }
   };
 
@@ -164,11 +165,13 @@ export default function Game() {
           currentQuestion={questions && questions[currentQuestion]}
           ready={ready}
           start={start}
+          review={review}
+          reviewCorrect={reviewCorrect}
         />
-        {!start && (
+        {!start && !review && (
           <Message
             isLoading={isLoading}
-            isOver={lifes <= 0 || time <= 0}
+            isOver={lifes <= 0 || timeOver}
             score={score}
             handleStart={handleStart}
           />
@@ -181,11 +184,27 @@ export default function Game() {
           ready={ready}
           score={score}
           start={start}
-          time={time}
+          review={review}
           currentQuestion={questions && questions[currentQuestion]}
+          reviewSelectedAnswer={reviewSelectedAnswer}
+          reviewCorrect={reviewCorrect}
           handleAnswer={handleAnswer}
           handleReady={handleReady}
+          handleTimeOver={handleTimeOver}
         />
+      </div>
+
+      <div className="m-2 flex flex-wrap gap-2">
+        <Reviews
+          reviews={reviews}
+          start={start}
+          handleShowReview={handleShowReview}
+        />
+        {review && (
+          <Button className="block" onClick={() => setReview(false)}>
+            Exit Review
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,40 @@
-export default function Timer({ time }: { time: number }) {
+import { TIME } from "@/lib/settings";
+import { useEffect, useState } from "react";
+
+export default function Timer({
+  start,
+  handleTimeOver,
+}: {
+  start: boolean;
+  handleTimeOver: () => void;
+}) {
+  const [time, setTime] = useState(TIME);
+
+  useEffect(() => {
+    if (start) {
+      const myInterval = setInterval(() => {
+        if (time > 0) {
+          setTime(time - 1);
+        }
+      }, 1000);
+      return () => {
+        clearInterval(myInterval);
+      };
+    }
+  }, [start, time]);
+
+  useEffect(() => {
+    if (start) {
+      setTime(TIME);
+    }
+  }, [start]);
+
+  useEffect(() => {
+    if (time <= 0) {
+      handleTimeOver();
+    }
+  }, [time, handleTimeOver]);
+
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
   return (

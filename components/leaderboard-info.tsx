@@ -15,7 +15,7 @@ export default function LeaderboardInfo({ score }: { score: number }) {
     };
     fetchRank().catch(console.error);
   }, [rank, score]);
-  console.log(rank, score);
+
   return (
     <div className="my-4 flex flex-col items-center justify-center gap-y-2">
       <p className="inline-block text-center text-2xl text-slate-50">

@@ -9,30 +9,39 @@ type GameControlProps = {
   ready: boolean;
   score: number;
   start: boolean;
-  time: number;
+  review: boolean;
+  reviewSelectedAnswer: string;
+  reviewCorrect: boolean;
   currentQuestion: null | { position: number; type: string; answers: string[] };
   handleAnswer: (pickedAnswer: number) => void;
   handleReady: () => void;
+  handleTimeOver: () => void;
 };
 export default function GameControl({
   lifes,
   ready,
   score,
   start,
-  time,
+  review,
   currentQuestion,
+  reviewSelectedAnswer,
+  reviewCorrect,
   handleAnswer,
   handleReady,
+  handleTimeOver,
 }: GameControlProps) {
   return (
     <div className="flex h-full min-h-full w-full flex-col items-center justify-stretch gap-4 bg-slate-950">
-      <Timer time={time} />
+      <Timer start={start} handleTimeOver={handleTimeOver} />
       <Lifes lifes={lifes} />
       <Score score={score} />
-      {currentQuestion && ready && (
+      {currentQuestion && (ready || review) && (
         <Answers
           currentQuestion={currentQuestion}
           handleAnswer={handleAnswer}
+          review={review}
+          reviewSelectedAnswer={reviewSelectedAnswer}
+          reviewCorrect={reviewCorrect}
         />
       )}
       {!ready && start && <ReadyBtn handleReady={handleReady} />}

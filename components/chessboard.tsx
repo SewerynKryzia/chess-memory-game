@@ -7,6 +7,8 @@ type ChessboardProps = {
   currentQuestion: null | { position: number; type: string; answers: string[] };
   ready: boolean;
   start: boolean;
+  review: boolean;
+  reviewCorrect: boolean;
 };
 
 export default function Chessboard({
@@ -14,6 +16,8 @@ export default function Chessboard({
   currentQuestion,
   ready,
   start,
+  review,
+  reviewCorrect,
 }: ChessboardProps) {
   let array = [...arrayPosition];
   if (start && ready) {
@@ -26,9 +30,10 @@ export default function Chessboard({
     } else {
       array = [...Array(64)];
     }
-  } else if (!start) {
+  } else if (!start && !review) {
     array = [...Array(64)];
   }
+
   return (
     <>
       {array.map((symbol, index) => {
@@ -41,6 +46,9 @@ export default function Chessboard({
                 ? "bg-amber-600"
                 : "bg-amber-400",
               symbol === "?" && "bg-green-500",
+              review &&
+                currentQuestion?.position === index &&
+                (reviewCorrect ? "bg-green-500" : "bg-rose-500"),
             )}
           >
             <Piece symbol={symbol} />
