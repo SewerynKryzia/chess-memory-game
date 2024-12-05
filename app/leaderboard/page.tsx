@@ -1,9 +1,6 @@
-import { getTopScores } from "@/actions/scoreActions";
-import { LEADERBOARD_POSITIONS } from "@/lib/settings";
-import { cn } from "@/lib/utils";
+import TopScores from "@/components/top-scores";
 
 export default async function Leaderboard() {
-  const topScores = await getTopScores(LEADERBOARD_POSITIONS);
   return (
     <main className="min-h-svh bg-slate-900">
       <div className="flex items-center justify-center py-12 text-zinc-50">
@@ -19,19 +16,7 @@ export default async function Leaderboard() {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(topScores) &&
-              topScores.map((item, index) => {
-                return (
-                  <tr
-                    key={item._id}
-                    className={cn("h-12", index % 2 === 0 && "bg-slate-700")}
-                  >
-                    <td>{index + 1}</td>
-                    <td>{item.nickname}</td>
-                    <td>{item.score}</td>
-                  </tr>
-                );
-              })}
+            <TopScores />
           </tbody>
         </table>
       </div>

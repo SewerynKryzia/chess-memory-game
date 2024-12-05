@@ -18,3 +18,5 @@ export type TReview = TQuestion & {
   correct: boolean;
   pickedAnswer: string;
 };
+
+export type TScore = { _id: string; nickname: string; score: number };

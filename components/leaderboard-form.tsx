@@ -7,25 +7,27 @@ import {
   FormDescription,
   FormField,
   FormItem,
-  // FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { postScore } from "@/actions/scoreActions";
+import { useState } from "react";
 
 const formSchema = z.object({
   nickname: z
     .string()
+    .trim()
     .min(2, {
       message: "Username must be at least 2 characters.",
     })
     .max(15, {
-      message: "Username must be less than 15 characters.",
+      message: "Username must be no more than 15 characters.",
     }),
 });
 
 export default function LeaderboardForm({ score }: { score: number }) {
+  const [error, setError] = useState<null | string>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,45 +36,52 @@ export default function LeaderboardForm({ score }: { score: number }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await postScore(values.nickname, score);
+    setError(null);
+    const result = await postScore(values.nickname, score);
+    if (typeof result === "object") {
+      setError(result.errMsg);
+    }
     return;
   }
 
-  // console.log(form.formState.errors);
-
-  return form.formState.isSubmitSuccessful ? (
+  return form.formState.isSubmitSuccessful && !error ? (
     <span className="text-green-500">Success!</span>
   ) : (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
-        <FormField
-          control={form.control}
-          name="nickname"
-          render={({ field }) => (
-            <FormItem>
-              {/* <FormLabel>Nickname</FormLabel> */}
-              <FormControl>
-                <Input
-                  placeholder="Your nickname"
-                  {...field}
-                  className="m-auto w-[90%]"
-                />
-              </FormControl>
-              <FormDescription className="m-auto w-[90%]">
-                min 2, max 15 characters
-              </FormDescription>
-              <FormMessage className="m-auto w-[90%]" />
-            </FormItem>
-          )}
-        />
-        <Button
-          type="submit"
-          variant="secondary"
-          className="m-auto block w-[90%]"
+    <>
+      {error && <span className="text-rose-500">{error}</span>}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-4"
         >
-          {form.formState.isSubmitting ? "Submitting..." : "Submit"}
-        </Button>
-      </form>
-    </Form>
+          <FormField
+            control={form.control}
+            name="nickname"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    placeholder="Your nickname"
+                    {...field}
+                    className="m-auto w-[90%]"
+                  />
+                </FormControl>
+                <FormDescription className="m-auto w-[90%]">
+                  min 2, max 15 characters
+                </FormDescription>
+                <FormMessage className="m-auto w-[90%]" />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            variant="secondary"
+            className="m-auto block w-[90%]"
+          >
+            {form.formState.isSubmitting ? "Submitting..." : "Submit"}
+          </Button>
+        </form>
+      </Form>
+    </>
   );
 }

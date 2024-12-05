@@ -6,17 +6,24 @@ import { useEffect, useState } from "react";
 
 export default function LeaderboardInfo({ score }: { score: number }) {
   const [rank, setRank] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchRank = async () => {
+      setIsLoading(true);
       const data = await getScoreRank(score);
       if (typeof data === "number") {
         setRank(data + 1);
       }
+      setIsLoading(false);
     };
     fetchRank().catch(console.error);
   }, [rank, score]);
 
-  return (
+  return isLoading ? (
+    <div className="my-4 flex flex-col items-center justify-center gap-y-2">
+      Loading...
+    </div>
+  ) : (
     <div className="my-4 flex flex-col items-center justify-center gap-y-2">
       <p className="inline-block text-center text-2xl text-slate-50">
         Your score is <span className="font-semibold">{score}</span>

@@ -168,10 +168,11 @@ export default function Game() {
           review={review}
           reviewCorrect={reviewCorrect}
         />
-        {!start && !review && (
+        {!start && (
           <Message
             isLoading={isLoading}
             isOver={lifes <= 0 || timeOver}
+            review={review}
             score={score}
             handleStart={handleStart}
           />

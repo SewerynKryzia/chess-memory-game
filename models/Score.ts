@@ -9,6 +9,7 @@ const scoreSchema: Schema = new Schema(
   {
     nickname: {
       type: String,
+      trim: true,
       required: true,
     },
     score: {
